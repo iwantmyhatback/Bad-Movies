@@ -1,7 +1,6 @@
 const request = require("request");
 const axios = require("axios");
 const github = require("../../config.js");
-const Promise = require("bluebird");
 
 // write out logic/functions required to query TheMovieDB.org
 
@@ -21,7 +20,14 @@ movieDB.presentGenres = function() {
 
 movieDB.getSelection = function(genreID) {
   genreID = JSON.parse(genreID);
-  let options = { params: { api_key: github.github.API_KEY, with_genres: genreID, sort_by: "popularity.asc" } };
+  let options = {
+    params: {
+      api_key: github.github.API_KEY,
+      with_genres: genreID,
+      sort_by: "popularity.asc",
+      "vote_count.gte": 10
+    }
+  };
   return axios.get("https://api.themoviedb.org/3/discover/movie", options);
 };
 // Don't forget to export your functions and require them within your server file

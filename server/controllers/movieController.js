@@ -21,11 +21,23 @@ module.exports = {
     // send back
   },
   saveMovie: (req, res) => {
-    console.log(req.body);
-    ///////////////////////////CHANGE INPUT FORMAT OF MOVIEMODEL.QUERY TO ACCECPT THE OPJECT IN REQ.BODY
-    movieModel.query();
-    res.send();
+    movieModel.save(req.body).catch(err => {
+      console.log("There Was An Insert Error: " + err);
+    });
+
+    movieModel.send().then(data => {
+      res.send(data);
+    });
   },
 
-  deleteMovie: (req, res) => {}
+  getFavs: (req, res) => {
+    movieModel.send().then(data => {
+      res.send(data);
+    });
+  },
+
+  deleteMovie: (req, res) => {
+    movieModel.remove(req.body.id);
+    res.send();
+  }
 };

@@ -38,7 +38,14 @@ class Search extends React.Component {
   }
 
   componentDidMount() {
-    this.getGenres();
+    this.getGenres().then(() => {
+      axios
+        .get("/movies/search", { params: { genreID: this.state.genres[0].id } })
+        .then(data => data.data.results)
+        .then(body => {
+          this.props.getMovies(body);
+        });
+    });
   }
 
   render() {
