@@ -1,31 +1,31 @@
-const movieModel = require('../models/movieModel.js');
-const apiHelpers = require('../helpers/apiHelpers.js');
+const movieModel = require("../models/movieModel.js");
+const apiHelpers = require("../helpers/apiHelpers.js");
 
 //Return requests to the client
 module.exports = {
   getSearch: (req, res) => {
-    // get the search genre     
-
-    // https://www.themoviedb.org/account/signup
-    // get your API KEY
-
-    // use this endpoint to search for movies by genres, you will need an API key
-
-    // https://api.themoviedb.org/3/discover/movie
-
-    // and sort them by horrible votes using the search parameters in the API
+    apiHelpers.movieDB.getSelection(req.query.genreID).then(data => {
+      // console.log(data.data);
+      res.body = data.data;
+      res.send(res.body);
+    });
   },
   getGenres: (req, res) => {
-    // make an axios request to get the list of official genres
-    
+    apiHelpers.movieDB.presentGenres().then(data => {
+      res.body = data.data;
+      res.send(res.body);
+    });
+
     // use this endpoint, which will also require your API key: https://api.themoviedb.org/3/genre/movie/list
-    
+
     // send back
   },
   saveMovie: (req, res) => {
-
+    console.log(req.body);
+    ///////////////////////////CHANGE INPUT FORMAT OF MOVIEMODEL.QUERY TO ACCECPT THE OPJECT IN REQ.BODY
+    movieModel.query();
+    res.send();
   },
-  deleteMovie: (req, res) => {
 
-  }
-}
+  deleteMovie: (req, res) => {}
+};

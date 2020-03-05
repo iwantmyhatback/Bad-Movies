@@ -1,34 +1,75 @@
-import React from 'react';
+import React from "react";
+import { get } from "mongoose";
+import axios from "axios";
 
 class Search extends React.Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
-      genres: []
+      genres: [{ id: null, name: null }]
     };
+    this.getGenres = this.getGenres.bind(this);
+    this.clickHandler = this.clickHandler.bind(this);
   }
+
   getGenres() {
-    //make an axios request in this component to get the list of genres from your endpoint GET GENRES
+    return axios
+      .get("/movies/genres")
+      .then(data => data.data)
+      .then(data => {
+        this.setState({ genres: data.genres });
+      })
+      .catch(err => {
+        console.log("Error Getting Genres");
+      });
+  }
+
+  clickHandler(event) {
+    event.preventDefault();
+    let options = { params: { genreID: this.refs.genre.value } };
+    return axios
+      .get("/movies/search", options)
+      .then(data => data.data.results)
+      .then(body => {
+        this.props.getMovies(body);
+      });
+
+    //   .catch(err => console.error(err));
+  }
+
+  componentDidMount() {
+    this.getGenres();
   }
 
   render() {
     return (
       <div className="search">
-        <button onClick={() => {this.props.swapFavorites()}}>{this.props.showFaves ? "Show Results" : "Show Favorites"}</button>
-        <br/><br/>
+        <button
+          onClick={() => {
+            this.props.swapFavorites();
+          }}
+        >
+          {this.props.showFaves ? "Show Results" : "Show Favorites"}
+        </button>
+        <br />
+        <br />
 
         {/* Make the select options dynamic from genres !!! */}
         {/* How can you tell which option has been selected from here? */}
-
-        <select>
-          <option value="theway">The Way</option>
-          <option value="thisway">This Way</option>
-          <option value="thatway">That Way</option>
-        </select>
-        <br/><br/>
-
-        <button>Search</button>
-
+        <form>
+          <select ref="genre">
+            {this.state.genres.map(genre => {
+              return (
+                <option key={genre.id} id={genre.name} value={genre.id}>
+                  {genre.name}
+                </option>
+              );
+            })}
+          </select>
+          <br />
+          <br />
+          <input onClick={this.clickHandler} type="submit" value="Search" />
+        </form>
       </div>
     );
   }
